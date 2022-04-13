@@ -1,0 +1,11 @@
+- name: install hping3
+  apt: name=hping3 state=latest
+  
+- name: download dns-flood
+  shell: "git clone https://github.com/nickwinn/dns-flood.git /home/vagrant/dns-flood"
+ 
+- name: install dns-flood
+  shell: "make -C /home/vagrant/dns-flood"
+  
+- name: install slowloris
+  shell: "pip3 install slowloris"

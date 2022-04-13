@@ -1,0 +1,23 @@
+- name: Create user "remote-admin"
+  user:
+      name: remote-admin
+      password: "{{ 'weakpassword' | password_hash('sha512') }}"
+      create_home: yes
+      shell: /bin/bash
+      
+- name: Create sudoer file for remote-admin
+  file:
+    path: "/etc/sudoers.d/remote-admin"
+    state: touch
+    mode: 0440
+    owner: root
+    group: root
+
+- name: Add sudoers rules for remote-admin
+  copy:
+     dest: "/etc/sudoers.d/remote-admin"
+     content: |
+        remote-admin ALL=(ALL) NOPASSWD: ALL
+
+- name: install tshark
+  apt: name=tshark update_cache=yes state=latest

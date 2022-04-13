@@ -1,0 +1,19 @@
+---
+device_aliases:
+  10.10.10.1: server-router
+  10.10.10.10: server
+  10.10.10.11: dns
+  10.10.20.1: client-router
+  10.10.20.10: client
+  10.10.30.1: attacker-router
+  10.10.30.10: attacker
+  10.10.30.11: bot1
+  10.10.30.12: bot2
+  10.10.30.13: bot3
+  10.10.40.1: admin-router
+  10.10.40.10: admin
+  100.100.100.1: server-router
+  100.100.100.2: client-router
+  100.100.100.3: attacker-router
+  100.100.100.4: admin-router
+...

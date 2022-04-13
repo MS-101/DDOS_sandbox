@@ -1,0 +1,39 @@
+/*
+* Odpovede na dotaník po vypracovaní úloh.
+*/
+
+1. Čo je DDOS útok?
+
+Riešenie: 
+
+2. Vymenujte konkrétne typy DDOS útokov, ktoré poznáte.
+
+Riešenie: 
+
+3. Čo je IP spoofing a ako sa využíva pri DDOS útokoch?
+
+Riešenie: 
+
+4. Čo je reflekcia a ako sa využíva pri DDOS útokoch?
+
+Riešenie: 
+
+5. Čo je amplifikácia a ako sa využíva pri DDOS útokoch?
+
+Riešenie: 
+
+6. Ako sa dá zabrániť IP spoofingu?
+
+Riešenie: 
+
+7. Akými metódami sa môže server chrániť pred DDOS útokmi?
+
+Riešenie: 
+
+8. Opíšte DDOS flood útoky.
+
+Riešenie: 
+
+9. Opíšte low and slow DDOS útoky.
+
+Riešenie: 

@@ -1,0 +1,36 @@
+/*
+* Riešenie úloh z kybernetickej hry.
+*/
+
+
+1. Spustite DDOS útok z administrátorovho zariadenia pomocou príkazu – „./ddos-master.sh uknown-ddos“. Počas prebiehajúceho DDOS útoku sa skúste pripojiť na stránku „ddos.com“. Zistite aký typ flood DDOS útoku sa spustil a zistite IP adresy útočiacich zariadení. (nápoveda: pripojte sa na server-router a sledujte trafiku na rozhraní enp0s8)
+
+Riešenie: 
+
+2. Upravte nastavenia firewallu na serverovom routeri tak, aby sa zablokovali všetky pakety, ktoré prichádzajú od útočiacich zariadení. Po upravení firewallu zapnite znova DDOS útok pomocou príkazu - „./ddos-master.sh unknown-ddos“. Môžete sa teraz pripojiť na stránku „ddos.com“? Ak áno, úlohu ste úspešne splnili.
+
+Riešenie: 
+
+3. Spustite iný DDOS útok pomocou príkazu - „./ddos-master.sh unknown-ddos-2“. Skúste sa znova dostať na stránku „ddos.com“. Zistite aký DDOS útok sa spustil. Ak ste sa nemohli dostať na stránku vysvetlite prečo.
+
+Riešenie: 
+
+4. Nastavte serverový router tak, aby sa na sieťovom rozhraní striktne kontrolovala zdrojová adresa (nápoveda: rp_filter). Funkčnosť pravidlo overte spustením „./ddos-master.sh unknown-ddos-2“. 
+
+Riešenie: 
+
+5. Nastavte na firewalle serverového routera pravidlo, ktoré limituje počet spojení od jedného zariadenia na TCP port 80. Funkčnosť tohto pravidla overte pomocou príkazu „./ddos-master.sh tcp-syn-flood-unspoofed“
+
+Riešenie: 
+
+6. Spustite DDOS útok pomocou príkazu – „./ddos-master.sh unknown-ddos-3“. Skúste sa dostať na stránku „ddos.com“. Môžete sa na stránku dostať? Skúste sa na stránku dostať znova zadaním IP adresy „10.10.10.10“. Aký DDOS útok prebieha a čo je jeho cieľom?
+
+Riešenie: 
+
+7. Zrušte bezpečnostnú konfiguráciu z úlohy 4. Spustite DDOS útok pomocou príkazu – „./ddos-master.sh dns-reflection“ a otestujte dostupnosť stránky „ddos.com“. Pozrite si aká sieťová trafika prebieha na serverovom routeri. Upravte nastavenia firewallu na DNS serveri tak, aby sa DNS query nemohli reflektovať na apache2 server.
+
+Riešenie: 
+
+8. Zrušte bezpečnostnú konfiguráciu z úlohy 2 a 5. Spustite low nad slow DDOS útok na server pomocou príkazu - „./ddos-master.sh slowloris“ a otestujte dostupnosť stránky „ddos.com“. Nájdite a nainštalujte vhodný modul pre apache2 server a nakonfigurujte ho tak, aby ste zabránili DDOS útoku. Úspešnosť tejto konfigurácie si môžete overiť navštívením stránky „ddos.com“. (nápoveda: napr. mod_qos, mod_reqtimeout alebo mod_security)
+
+Riešenie: 

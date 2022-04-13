@@ -1,0 +1,34 @@
+---
+
+- name: Run tasks for all routers
+  hosts: routers
+  become: true
+  tasks:
+  - name: include role
+    include_role:
+        name: "{{ inventory_hostname }}"
+
+- hosts: hosts
+  become: true
+  tasks:
+  - name: Install resolvconf
+    apt: name=resolvconf update_cache=yes state=latest
+  - name: Add dns resolver to configurations
+    shell: echo "nameserver 10.10.10.11" > /etc/resolvconf/resolv.conf.d/head
+  - name: Update dns resolver configuration
+    shell: resolvconf -u
+#    shell: cat -i 's/nameserver/nameserver 10.10.10.11\nnameserver/' /etc/resolv.conf
+
+- name: Run tasks for all hosts
+  hosts: hosts:!bots
+  become: yes
+  tasks:
+  - name: include role
+    include_role:
+      name: "{{ inventory_hostname }}"
+
+- name: Configuring bots
+  hosts: bots
+  become: yes
+  roles:
+    - bots

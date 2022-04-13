@@ -1,0 +1,81 @@
+- name: Create user "remote-admin"
+  user:
+      name: remote-admin
+      password: "{{ 'weakpassword' | password_hash('sha512') }}"
+      create_home: yes
+      shell: /bin/bash
+
+- name: Create sudoer file for remote-admin
+  file:
+    path: "/etc/sudoers.d/remote-admin"
+    state: touch
+    mode: 0440
+    owner: root
+    group: root
+
+- name: Add sudoers rules for remote-admin
+  copy:
+     dest: "/etc/sudoers.d/remote-admin"
+     content: |
+        remote-admin ALL=(ALL) NOPASSWD: ALL
+
+- name: Install bind9
+  apt: name=bind9 update_cache=yes state=latest
+
+- name: Install dnsutils
+  apt: name=dnsutils update_cache=yes state=latest
+
+- name: Configure /etc/bind/named.conf
+  copy:
+      src: ../files/named.conf
+      dest: /etc/bind/named.conf
+      owner: root
+      mode: '0644'
+
+- name: Configure /var/cache/bind/db.domain
+  copy:
+      src: ../files/db.domain
+      dest: /var/cache/bind/db.domain
+      owner: root
+      mode: '0644'
+
+- name: Configure /var/cache/bind/db.ip
+  copy:
+      src: ../files/db.ip
+      dest: /var/cache/bind/db.ip
+      owner: root
+      mode: '0644'
+      
+- name: Configure /var/cache/bind/amplification.domain
+  copy:
+      src: ../files/amplification.domain
+      dest: /var/cache/bind/amplification.domain
+      owner: root
+      mode: '0644'
+
+- name: Configure /var/cache/bind/amplification.ip
+  copy:
+      src: ../files/amplification.ip
+      dest: /var/cache/bind/amplification.ip
+      owner: root
+      mode: '0644'
+
+- name: Restart service bind9
+  service:
+    name: bind9
+    state: restarted
+
+- name: add iptables rule accept ssh connections
+  shell: "iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT"
+  
+- name: add iptables rule drop if there are more than 100 connections
+  shell: "iptables -A INPUT -m connlimit --connlimit-above 100 --connlimit-mask 0 --connlimit-saddr -j DROP"
+
+- name: save new iptables rules
+  shell: "iptables-save"
+  
+- name: install wondershaper
+  apt: name=wondershaper update_cache=yes state=latest
+
+- name: limit bandwidth with wondershaper
+  shell: "sudo wondershaper enp0s8 2000 2000"

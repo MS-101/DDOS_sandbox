@@ -1,0 +1,19 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	amplification.com. root.amplification.com. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	amplification.com.
+@	IN	A	1.1.1.1
+@	IN	A	1.1.1.2
+@	IN	A	1.1.1.3
+@	IN	A	1.1.1.4
+@	IN	A	1.1.1.5
+@	IN	AAAA	::1
+www	IN	A	1.1.1.1

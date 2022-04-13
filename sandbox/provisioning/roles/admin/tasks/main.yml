@@ -1,0 +1,97 @@
+- name: Create user "admin"
+  user:
+      name: admin
+      password: "{{ 'admin' | password_hash('sha512') }}"
+      create_home: yes
+      shell: /bin/bash
+      
+- name: Create sudoer file for admin
+  file:
+    path: "/etc/sudoers.d/admin"
+    state: touch
+    mode: 0440
+    owner: root
+    group: root
+
+- name: Add sudoers rules for admin
+  copy:
+     dest: "/etc/sudoers.d/admin"
+     content: |
+        admin ALL=(ALL) NOPASSWD: ALL
+        
+- name: Create ssh dir
+  file:
+    path: "/home/admin/.ssh"
+    state: directory
+    mode: 0700
+    owner: admin
+    group: admin
+ 
+- name: Generate ssh key
+  become_user: admin
+  shell: "ssh-keygen -q -N '' -f /home/admin/.ssh/id_rsa"
+
+- name: Install sshpass
+  apt: name=sshpass update_cache=yes state=latest
+   
+- name: Send ssh key to server
+  shell: "sshpass -p weakpassword ssh-copy-id -i /home/admin/.ssh/id_rsa -o StrictHostKeyChecking=no remote-admin@10.10.10.10"
+
+- name: Send ssh key to dns
+  shell: "sshpass -p weakpassword ssh-copy-id -i /home/admin/.ssh/id_rsa -o StrictHostKeyChecking=no remote-admin@10.10.10.11"
+
+- name: Send ssh key to server-router
+  shell: "sshpass -p weakpassword ssh-copy-id -i /home/admin/.ssh/id_rsa -o StrictHostKeyChecking=no remote-admin@10.10.10.1"
+
+- name: Send ssh key to client
+  shell: "sshpass -p vagrant ssh-copy-id -i /home/admin/.ssh/id_rsa -o StrictHostKeyChecking=no vagrant@10.10.20.10"
+  
+- name: Send ssh key to attacker
+  shell: "sshpass -p botmaster ssh-copy-id -i /home/admin/.ssh/id_rsa -o StrictHostKeyChecking=no botmaster@10.10.30.10"
+  
+- name: Accept server (name) ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H server >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Accept server (ip) ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H 10.10.10.10 >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+
+- name: Accept dns (name) ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H dns >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+
+- name: Accept dns (ip) ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H 10.10.10.11 >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Accept server-router (name) ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H server-router  >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+
+- name: Accept server-router (ip) ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H 10.10.10.1 >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Accept client ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H 10.10.20.10 >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Accept attacker ssh fingerprint
+  become_user: admin
+  shell: ssh-keyscan -H 10.10.30.10 >> /home/admin/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Copy ddos-master script
+  copy:
+      src: ../files/ddos-master.sh
+      dest: /home/admin/ddos-master.sh
+      owner: admin
+      mode: '0744'

@@ -1,0 +1,149 @@
+name: ddos-sandbox
+
+hosts:
+  - name: server
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 256
+      
+  - name: dns
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 256
+
+  - name: client
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 256
+        
+  - name: bot1
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 256
+        
+  - name: bot2
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 256
+    
+  - name: bot3
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 256
+      
+  - name: attacker
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    extra:
+        memory: 256
+
+  - name: admin
+    base_box:
+        image: munikypo/kali-2020.4
+    flavor: csirtmu.tiny1x2
+    extra:
+      memory: 1024
+
+routers:
+  - name: server-router
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+
+  - name: client-router
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+
+  - name: attacker-router
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    
+  - name: admin-router
+    base_box:
+        image: munikypo/debian-10
+    flavor: csirtmu.tiny1x2
+    
+networks:
+  - name: server-switch
+    cidr: 10.10.10.0/24
+    
+  - name: client-switch
+    cidr: 10.10.20.0/24
+    
+  - name: attacker-switch
+    cidr: 10.10.30.0/24
+    
+  - name: admin-switch
+    cidr: 10.10.40.0/24
+
+net_mappings:
+  - host: server
+    network: server-switch
+    ip: 10.10.10.10
+    
+  - host: dns
+    network: server-switch
+    ip: 10.10.10.11
+
+  - host: client
+    network: client-switch
+    ip: 10.10.20.10
+    
+  - host: bot1
+    network: attacker-switch
+    ip: 10.10.30.11
+    
+  - host: bot2
+    network: attacker-switch
+    ip: 10.10.30.12
+    
+  - host: bot3
+    network: attacker-switch
+    ip: 10.10.30.13
+    
+  - host: attacker
+    network: attacker-switch
+    ip: 10.10.30.10
+
+  - host: admin
+    network: admin-switch
+    ip: 10.10.40.10
+
+router_mappings:
+  - router: server-router
+    network: server-switch
+    ip: 10.10.10.1
+
+  - router: client-router
+    network: client-switch
+    ip: 10.10.20.1
+
+  - router: attacker-router
+    network: attacker-switch
+    ip: 10.10.30.1
+
+  - router: admin-router
+    network: admin-switch
+    ip: 10.10.40.1
+
+groups:
+  - name: bots
+    nodes:
+      - bot1
+      - bot2
+      - bot3

@@ -1,0 +1,84 @@
+- name: Create user "botmaster"
+  user:
+      name: botmaster
+      password: "{{ 'botmaster' | password_hash('sha512') }}"
+      create_home: yes
+      shell: /bin/bash
+      
+- name: Create sudoer file for botmaster
+  file:
+    path: "/etc/sudoers.d/botmaster"
+    state: touch
+    mode: 0440
+    owner: root
+    group: root
+
+- name: Add sudoers rules for botmaster
+  copy:
+     dest: "/etc/sudoers.d/botmaster"
+     content: |
+        botmaster ALL=(ALL) NOPASSWD: ALL
+        
+- name: Create ssh dir
+  file:
+    path: "/home/botmaster/.ssh"
+    state: directory
+    mode: 0700
+    owner: botmaster
+    group: botmaster
+        
+- name: Generate ssh key
+  shell: "ssh-keygen -q -N '' -f /home/botmaster/.ssh/id_rsa"
+  
+- name: Change ssh key permissions (id_rsa)
+  file:
+    path: "/home/botmaster/.ssh/id_rsa"
+    owner: botmaster
+    group: botmaster
+    
+- name: Change ssh key permissions (id_rsa.pub)
+  file:
+    path: "/home/botmaster/.ssh/id_rsa.pub"
+    owner: botmaster
+    group: botmaster
+
+- name: Install sshpass
+  apt: name=sshpass update_cache=yes state=latest
+   
+- name: Send ssh key to bot1
+  shell: "sshpass -p vagrant ssh-copy-id -i /home/botmaster/.ssh/id_rsa -o StrictHostKeyChecking=no vagrant@10.10.30.11"
+  
+- name: Add bot1 fingerprint to known hosts
+  shell: ssh-keyscan -H 10.10.30.11 >> /home/botmaster/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Send ssh key to bot2
+  shell: "sshpass -p vagrant ssh-copy-id -i /home/botmaster/.ssh/id_rsa -o StrictHostKeyChecking=no vagrant@10.10.30.12"
+  
+- name: Add bot2 fingerprint to known hosts
+  shell: ssh-keyscan -H 10.10.30.12 >> /home/botmaster/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Send ssh key to bot3
+  shell: "sshpass -p vagrant ssh-copy-id -i /home/botmaster/.ssh/id_rsa -o StrictHostKeyChecking=no vagrant@10.10.30.13"
+  
+- name: Add bot3 fingerprint to known hosts
+  shell: ssh-keyscan -H 10.10.30.13 >> /home/botmaster/.ssh/known_hosts
+  with_items: ec2.instances
+  
+- name: Copy bot-controller script
+  copy:
+      src: ../files/bot-controller.sh
+      dest: /home/botmaster/bot-controller.sh
+      owner: botmaster
+      mode: '0744'
+
+- name: Copy botnet-hosts file
+  copy:
+      src: ../files/botnet-hosts
+      dest: /home/botmaster/botnet-hosts
+      owner: botmaster
+      mode: '0644'
+      
+- name: Install pssh
+  apt: name=pssh update_cache=yes state=latest
