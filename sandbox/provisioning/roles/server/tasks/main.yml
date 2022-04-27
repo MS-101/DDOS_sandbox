@@ -32,8 +32,8 @@
 - name: add iptables rule accept ssh connections
   shell: "iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT"
   
-- name: add iptables rule drop if there are more than 100 connections
-  shell: "iptables -A INPUT -m connlimit --connlimit-above 100 --connlimit-mask 0 --connlimit-saddr -j DROP"
+- name: add iptables rule drop if there are more than 20 connections
+  shell: "iptables -A INPUT -m connlimit --connlimit-above 20 --connlimit-mask 0 --connlimit-saddr -j DROP"
 
 - name: save new iptables rules
   shell: "iptables-save"
