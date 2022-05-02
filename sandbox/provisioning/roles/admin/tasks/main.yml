@@ -95,3 +95,6 @@
       dest: /home/admin/ddos-master.sh
       owner: admin
       mode: '0744'
+      
+- name: Change EOF in ddos-master script
+  shell: "sed -i -e 's/\r$//' /home/admin/ddos-master.sh"

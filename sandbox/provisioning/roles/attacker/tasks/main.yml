@@ -72,6 +72,9 @@
       dest: /home/botmaster/bot-controller.sh
       owner: botmaster
       mode: '0744'
+      
+- name: Change EOF in bot-controler script
+  shell: "sed -i -e 's/\r$//' /home/botmaster/bot-controller.sh"
 
 - name: Copy botnet-hosts file
   copy:
@@ -79,6 +82,9 @@
       dest: /home/botmaster/botnet-hosts
       owner: botmaster
       mode: '0644'
+      
+- name: Change EOF in botnet-hosts file
+  shell: "sed -i -e 's/\r$//' /home/botmaster/botnet-hosts"
       
 - name: Install pssh
   apt: name=pssh update_cache=yes state=latest
