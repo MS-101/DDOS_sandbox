@@ -17,7 +17,6 @@
     shell: echo "nameserver 10.10.10.11" > /etc/resolvconf/resolv.conf.d/head
   - name: Update dns resolver configuration
     shell: resolvconf -u
-#    shell: cat -i 's/nameserver/nameserver 10.10.10.11\nnameserver/' /etc/resolv.conf
 
 - name: Run tasks for all hosts
   hosts: hosts:!bots
